@@ -79,18 +79,18 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 
 
 
-# DATABASES = {
-#     "default": dj_database_url.parse(
-#         os.environ.get("database_url"), conn_max_age=6000, ssl_require=True,
-#     )
-# }
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    "default": dj_database_url.parse(
+        os.environ.get("database_url"), conn_max_age=6000, ssl_require=True,
+    )
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
