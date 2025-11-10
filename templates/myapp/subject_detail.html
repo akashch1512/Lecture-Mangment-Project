@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load static %}
+{% load myapp_extras %}
+
+{% block title %}{{ subject.name }} · LectureMap{% endblock %}
+
+{% block content %}
+<style>
+  .subject-header {
+    background: var(--primary-50);
+    border-bottom: 1px solid var(--primary-100);
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+  }
+
+  .chapter-card {
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    background: white;
+    margin-bottom: 1.5rem;
+  }
+
+  .chapter-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--gray-50);
+    border-radius: 0.75rem 0.75rem 0 0;
+  }
+
+  .topic-list {
+    padding: 1rem 1.5rem;
+  }
+
+  .topic-row {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .topic-row:last-child {
+    border-bottom: none;
+  }
+</style>
+
+<div class="subject-header">
+  <div class="container">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold mb-2">{{ subject.name }}</h1>
+        <p class="text-muted">{{ subject.description }}</p>
+      </div>
+      {% if is_teacher %}
+      <div>
+        <button class="btn btn-primary" hx-get="{% url 'add_chapter' subject.id %}" hx-target="#chapters">
+          Add Chapter
+        </button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div id="chapters" class="space-y-6">
+    {% for chapter in chapters %}
+    <div class="chapter-card">
+      <div class="chapter-header">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">{{ chapter.title }}</h2>
+          {% if is_teacher %}
+          <div class="flex items-center gap-2">
+            <button class="btn btn-sm" 
+                    hx-get="{% url 'edit_chapter' chapter.id %}"
+                    hx-target="#chapter-{{ chapter.id }}">
+              Edit
+            </button>
+            <button class="btn btn-sm btn-danger" 
+                    hx-delete="{% url 'delete_chapter' chapter.id %}"
+                    hx-confirm="Are you sure you want to delete this chapter?">
+              Delete
+            </button>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="topic-list">
+        {% for topic in chapter.topics.all %}
+          {% include "myapp/_topic_row.html" with t=topic %}
+        {% empty %}
+          <div class="text-center py-4 text-muted">
+            No topics added yet
+          </div>
+        {% endfor %}
+        
+        {% if is_teacher %}
+        <div class="mt-4">
+          <button class="btn btn-sm btn-outline" 
+                  hx-get="{% url 'add_topic' chapter.id %}" 
+                  hx-target="#chapter-{{ chapter.id }}-topics">
+            Add Topic
+          </button>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-8">
+      <div class="text-muted mb-4">No chapters added yet</div>
+      {% if is_teacher %}
+      <button class="btn btn-primary" hx-get="{% url 'add_chapter' subject.id %}" hx-target="#chapters">
+        Add First Chapter
+      </button>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

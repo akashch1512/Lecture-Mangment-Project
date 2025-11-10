@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Teacher Dashboard{% endblock %}
+{% block content %}
+<div class="card">
+  <h2 class="text-2xl font-bold mb-4">Teacher Dashboard</h2>
+  {% if alerts %}<p><strong>Alerts:</strong></p>
+    <ul>{% for a in alerts %}<li>{{ a }}</li>{% endfor %}</ul>
+  {% else %}<p class="muted">No alerts.</p>{% endif %}
+</div>
+
+<div class="card">
+  <h3 class="text-xl font-semibold mb-4">Your Subjects</h3>
+  <div class="grid gap-4">
+    {% for s in subjects %}
+    <div class="bg-white p-4 rounded-lg border border-gray-200">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h4 class="text-lg font-semibold">{{ s.name }}</h4>
+          <p class="text-gray-600">{{ s.class_name }}</p>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-gray-600">
+            {{ s.conducted_lectures }}/{{ s.planned_lectures }} lectures
+          </span>
+          <a class="btn btn-outline" href="{% url 'subject_detail' s.id %}">Open</a>
+        </div>
+      </div>
+      
+      <div hx-get="{% url 'progress_partial' s.id %}" 
+           hx-trigger="load every 3s" 
+           hx-swap="outerHTML" 
+           data-progress-bar>
+        {% include "myapp/_progress_bar.html" with subject=s %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

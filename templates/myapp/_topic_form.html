@@ -1,0 +1,24 @@
+<form hx-post="{% url 'add_topic' chapter.id %}" hx-target="#chapter-{{ chapter.id }}-topics" hx-swap="beforeend" class="p-4">
+  <h3 class="text-lg font-semibold mb-4">Add New Topic</h3>
+
+  <div class="form-group">
+    <label class="form-label" for="title">Topic Title</label>
+    <input 
+      type="text" 
+      name="title" 
+      id="title" 
+      class="form-input" 
+      required
+      autofocus
+    >
+  </div>
+
+  <div class="flex justify-end gap-2 mt-4">
+    <button type="button" class="btn btn-secondary" onclick="this.closest('form').remove()">
+      Cancel
+    </button>
+    <button type="submit" class="btn btn-primary">
+      Add Topic
+    </button>
+  </div>
+</form>

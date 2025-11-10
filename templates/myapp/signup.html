@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block title %}Sign up · LectureMap{% endblock %}
+
+{% block head %}
+<style>
+  .form-container {
+    max-width: 560px;
+    margin: 40px auto;
+    padding: 32px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.06);
+  }
+  
+  .form-field {
+    margin-bottom: 20px;
+  }
+  
+  .field-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  
+  .form-input:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+  }
+  
+  .error-text {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 4px;
+  }
+  
+  .form-errors {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #dc2626;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+  }
+  
+  .submit-btn {
+    background: #2563eb;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .submit-btn:hover {
+    background: #1d4ed8;
+  }
+  
+  .help-text {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 4px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+  <h2 style="margin-top:0;margin-bottom:8px">Create an account</h2>
+  <p style="color:#6b7280;margin-bottom:24px">Choose a role and provide basic details. You can edit these later in your profile.</p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    
+    {% if form.non_field_errors %}
+    <div class="form-errors">
+      {% for error in form.non_field_errors %}
+        <div>{{ error }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="form-field">
+      <label class="field-label" for="{{ form.username.id_for_label }}">Username</label>
+      {{ form.username }}
+      {% if form.username.errors %}
+        {% for error in form.username.errors %}
+          <div class="error-text">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+      {% if form.username.help_text %}
+        <div class="help-text">{{ form.username.help_text }}</div>
+      {% endif %}
+    </div>
+
+    <div class="form-field">
+      <label class="field-label" for="{{ form.email.id_for_label }}">Email Address</label>
+      {{ form.email }}
+      {% if form.email.errors %}
+        {% for error in form.email.errors %}
+          <div class="error-text">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <div class="form-field">
+      <label class="field-label" for="{{ form.full_name.id_for_label }}">Full Name (Optional)</label>
+      {{ form.full_name }}
+      {% if form.full_name.errors %}
+        {% for error in form.full_name.errors %}
+          <div class="error-text">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <div class="form-field">
+      <label class="field-label" for="{{ form.role.id_for_label }}">Role</label>
+      {{ form.role }}
+      {% if form.role.errors %}
+        {% for error in form.role.errors %}
+          <div class="error-text">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <div class="form-field">
+      <label class="field-label" for="{{ form.password1.id_for_label }}">Password</label>
+      {{ form.password1 }}
+      {% if form.password1.errors %}
+        {% for error in form.password1.errors %}
+          <div class="error-text">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+      {% if form.password1.help_text %}
+        <div class="help-text">{{ form.password1.help_text|safe }}</div>
+      {% endif %}
+    </div>
+
+    <div class="form-field">
+      <label class="field-label" for="{{ form.password2.id_for_label }}">Confirm Password</label>
+      {{ form.password2 }}
+      {% if form.password2.errors %}
+        {% for error in form.password2.errors %}
+          <div class="error-text">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+      {% if form.password2.help_text %}
+        <div class="help-text">{{ form.password2.help_text }}</div>
+      {% endif %}
+    </div>
+
+    <div>
+      <button type="submit" class="submit-btn">Create Account</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

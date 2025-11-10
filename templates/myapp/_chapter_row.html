@@ -1,0 +1,44 @@
+{% load myapp_extras %}
+<div class="chapter-card" id="chapter-{{ chapter.id }}">
+  <div class="chapter-header">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold">{{ chapter.title }}</h2>
+      {% if is_teacher %}
+      <div class="flex items-center gap-2">
+        <button class="btn btn-sm" 
+                hx-get="{% url 'edit_chapter' chapter.id %}"
+                hx-target="#chapter-{{ chapter.id }}">
+          Edit
+        </button>
+        <button class="btn btn-sm btn-danger" 
+                hx-delete="{% url 'delete_chapter' chapter.id %}"
+                hx-confirm="Are you sure you want to delete this chapter?"
+                hx-target="#chapter-{{ chapter.id }}"
+                hx-swap="outerHTML">
+          Delete
+        </button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div id="chapter-{{ chapter.id }}-topics" class="topic-list">
+    {% for topic in chapter.topics.all %}
+      {% include "myapp/_topic_row.html" with t=topic %}
+    {% empty %}
+      <div class="text-center py-4 text-muted">
+        No topics added yet
+      </div>
+    {% endfor %}
+    
+    {% if is_teacher %}
+    <div class="mt-4">
+      <button class="btn btn-sm btn-outline" 
+              hx-get="{% url 'add_topic' chapter.id %}" 
+              hx-target="#chapter-{{ chapter.id }}-topics">
+        Add Topic
+      </button>
+    </div>
+    {% endif %}
+  </div>
+</div>

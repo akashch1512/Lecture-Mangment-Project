@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Report — {{ subject.name }}</h2>
+  <p class="muted">{{ subject.class_name }}</p>
+  <p>Progress: {{ subject.progress_percent }}% · Lectures {{ subject.conducted_lectures }}/{{ subject.planned_lectures }}</p>
+  {% for ch in chapters %}
+    <h3>{{ ch.order }}. {{ ch.title }}</h3>
+    <ul>
+      {% for t in ch.topics.all %}
+        <li>{{ t.title }} — {% if t.status and t.status.completed %}Done{% else %}Pending{% endif %}</li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+</div>
+{% endblock %}

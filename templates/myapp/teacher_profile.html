@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Teacher Profile · LectureMap{% endblock %}
+{% block content %}
+<div style="max-width:680px;margin:36px auto;padding:20px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.06)">
+  <h2 style="margin-top:0">{{ teacher.username }} — Teacher</h2>
+  <p><strong>Full name:</strong> {{ teacher.profile.full_name|default:teacher.get_full_name }}</p>
+  <p><strong>Email:</strong> {{ teacher.email }}</p>
+  <p><strong>Bio:</strong> {{ teacher.profile.bio|default:"(not set)" }}</p>
+</div>
+{% endblock %}

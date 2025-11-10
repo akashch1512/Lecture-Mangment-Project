@@ -1,0 +1,43 @@
+<div id="topic-{{ t.id }}" class="flex items-center justify-between p-3 {% if t.status and t.status.completed %}bg-emerald-50{% else %}bg-gray-50{% endif %} rounded-lg transition-all duration-200">
+  <div class="flex items-center gap-4">
+    <div class="text-sm">
+      <div class="font-medium">{{ t.title }}</div>
+      {% if t.status and t.status.updated_by %}
+        <div class="text-muted text-xs">
+          Last updated {{ t.status.updated_at|timesince }} ago by {{ t.status.updated_by.username }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="flex items-center gap-2">
+    <span class="badge {% if t.status and t.status.completed %}badge-success{% else %}badge-warning{% endif %}">
+      {% if t.status and t.status.completed %}Completed{% else %}Pending{% endif %}
+    </span>
+    
+    {% if is_teacher %}
+      <form class="no-print" 
+           hx-post="{% url 'toggle_topic' t.id %}" 
+           hx-target="#topic-{{ t.id }}" 
+           hx-swap="outerHTML"
+           hx-trigger="submit"
+           hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+           hx-on="htmx:afterRequest: document.querySelectorAll('[data-progress-bar]').forEach(el => el.setAttribute('hx-trigger', 'load'))"
+      >
+        <button type="submit" class="btn btn-outline btn-sm flex items-center gap-1" data-topic-toggle>
+          {% if t.status and t.status.completed %}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 3l18 18M3 21L21 3"/>
+            </svg>
+            Undo
+          {% else %}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Mark Done
+          {% endif %}
+        </button>
+      </form>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,121 @@
+{% load static %}
+{% load myapp_extras %}
+<nav class="topbar">
+  <div class="topbar-left flex items-center gap-4">
+    <a href="{% url 'home' %}" class="logo">
+      <!-- open book icon -->
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 6.5C3 5.67 3.67 5 4.5 5h0C6.08 5 8 5.67 10 6.5c2-0.83 3.92-1.5 5.5-1.5h0c0.83 0 1.5 0.67 1.5 1.5V18c0 0.83-0.67 1.5-1.5 1.5H16c-1.58 0-3.5-0.67-5.5-1.5C9.92 18.83 8 19.5 6.5 19.5H4.5C3.67 19.5 3 18.83 3 18V6.5z" fill="rgba(255,255,255,0.95)" />
+      </svg>
+      <span class="brand">LectureMap</span>
+    </a>
+    
+    {% if user.is_authenticated %}
+      {% if request.user|is_teacher %}
+        <a href="{% url 'teacher_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'teacher_dashboard' %}active{% endif %}">
+          Dashboard
+        </a>
+      {% elif request.user|is_student %}
+        <a href="{% url 'student_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'student_dashboard' %}active{% endif %}">
+          Dashboard
+        </a>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  <div class="topbar-right flex items-center gap-4">
+    {% if user.is_authenticated %}
+      <div class="flex items-center gap-2">
+        {% if user.profile.full_name %}
+          <span class="text-muted">{{ user.profile.full_name }}</span>
+        {% else %}
+          <span class="text-muted">{{ user.username }}</span>
+        {% endif %}
+        
+        <div class="dropdown">
+          <button class="avatar" onclick="toggleDropdown(event)" aria-haspopup="true" aria-expanded="false" style="background:linear-gradient(135deg,#60A5FA,#2563EB);width:36px;height:36px;border-radius:999px;border:none;color:white;font-weight:700;display:flex;align-items:center;justify-content:center">
+            {{ user.username|make_list|first|upper }}
+          </button>
+          <div id="profileDropdown" class="dropdown-menu" style="display:none;position:absolute;right:0;margin-top:0.5rem;background:var(--card);border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,0.08);min-width:220px;">
+            <a href="{% url 'profile' %}" class="dropdown-item flex items-center gap-2">
+              <!-- user icon -->
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z" fill="currentColor" />
+                <path d="M4 20c0-2.21 3.58-4 8-4s8 1.79 8 4v1H4v-1z" fill="rgba(0,0,0,0.6)" />
+              </svg>
+              Profile
+            </a>
+            {% if request.user|is_teacher %}
+              <a href="{% url 'teacher_dashboard' %}" class="dropdown-item flex items-center gap-2">
+                <!-- dashboard icon -->
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="3" y="3" width="7" height="8" fill="currentColor" />
+                  <rect x="14" y="3" width="7" height="5" fill="rgba(0,0,0,0.6)" />
+                  <rect x="14" y="10" width="7" height="11" fill="rgba(0,0,0,0.2)" />
+                </svg>
+                Teacher Dashboard
+              </a>
+            {% endif %}
+            <form method="post" action="{% url 'logout' %}" style="margin:0">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-item flex items-center gap-2" style="background:transparent;border:none;padding:0;width:100%;text-align:left;color:var(--text);">
+                <!-- logout icon -->
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M16 17l5-5-5-5" fill="currentColor" />
+                  <path d="M21 12H9" stroke="currentColor" stroke-width="1.2" />
+                  <path d="M13 19H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h7" stroke="rgba(0,0,0,0.5)" stroke-width="1.2" />
+                </svg>
+                Logout
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="flex items-center gap-2">
+        <a href="{% url 'signup' %}" class="nav-link">Sign up</a>
+        <a href="{% url 'login_role' 'student' %}" class="btn btn-primary">Login</a>
+      </div>
+    {% endif %}
+  </div>
+</nav>
+
+<style>
+.dropdown { position: relative; }
+.dropdown-menu {
+  z-index: 50;
+  padding: 0.5rem;
+  animation: fadeIn 0.2s ease-out;
+}
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+.dropdown-item:hover {
+  background: var(--bg-gradient);
+}
+.text-danger { color: var(--danger); }
+</style>
+
+<script>
+function toggleDropdown(event) {
+  const menu = document.getElementById('profileDropdown');
+  const isVisible = menu.style.display === 'block';
+  menu.style.display = isVisible ? 'none' : 'block';
+  
+  // Close when clicking outside
+  if (!isVisible) {
+    document.addEventListener('click', function closeDropdown(e) {
+      if (!menu.contains(e.target) && !event.target.contains(e.target)) {
+        menu.style.display = 'none';
+        document.removeEventListener('click', closeDropdown);
+      }
+    });
+  }
+}
+</script>

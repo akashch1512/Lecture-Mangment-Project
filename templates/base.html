@@ -1,0 +1,164 @@
+<!doctype html>
+{% load static %}
+{% load user_roles %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}LectureMap{% endblock %}</title>
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  {% csrf_token %}
+  
+  <!-- fonts & HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <!-- HTMX CSRF configuration -->
+  <script>
+    document.addEventListener('htmx:configRequest', function(evt) {
+      evt.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    });
+  </script>
+  <!-- Modern font: Poppins with Inter fallback -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  {% load static %}
+  <!-- Global styles -->
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+  <style>
+    :root{
+      --bg: #f7f7fb;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --text: #111827;
+      --primary: #2563eb;
+      --primary-600: #1d4ed8;
+      --border: #e6e9ee;
+      --card-shadow: 0 8px 24px rgba(16,24,40,0.06);
+      --radius: 12px;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.5;
+    }
+
+    /* Topbar */
+    .topbar {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background: linear-gradient(90deg, rgba(13,42,148,1) 0%, rgba(37,99,235,1) 100%);
+      color: white;
+      padding: 10px 22px;
+      box-shadow: 0 2px 8px rgba(16,24,40,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:white; }
+    .logo .brand { font-weight:700; font-size:1.05rem; }
+    .nav-link { color: rgba(255,255,255,0.9); margin-left:12px; text-decoration:none; font-weight:600; }
+    .nav-link:hover{ opacity:0.95 }
+
+    /* Buttons */
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--card); color:var(--text); text-decoration:none; }
+    .btn-outline { background: transparent; border:1px solid rgba(15,23,42,0.06); }
+    .btn-primary { background: var(--primary); color:white; border:none; }
+    .btn-primary:hover { background: var(--primary-600); }
+
+    .topbar-left, .topbar-right { display:flex; align-items:center; gap:12px; }
+    .username { margin-right:6px; color: rgba(255,255,255,0.9); font-weight:600 }
+    .logout { color: #fde68a }
+    .wrap { max-width:1100px; margin:28px auto; padding:0 20px; }
+    .card { background: var(--card); padding:20px; border-radius: var(--radius); margin-bottom:20px; box-shadow: var(--card-shadow); border:1px solid var(--border); }
+      /* Progress bar styles */
+      .progress-container {
+        background: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+      }
+    
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 8px 0;
+      }
+    
+      .progress-bar-fill {
+        height: 100%;
+        background: #2563eb;
+        transition: width 0.3s ease;
+        border-radius: 4px;
+      }
+    
+      .progress-details {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        font-size: 0.875rem;
+        color: #6b7280;
+      }
+    
+      .progress-detail {
+        text-align: center;
+      }
+    
+      .detail-label {
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 2px;
+      }
+    
+      .detail-value {
+        font-weight: 600;
+        color: #374151;
+      }
+    .topbar-left, .topbar-right {
+      display: flex;
+      align-items: center;
+    }
+    .username {
+      margin-right: 14px;
+      color: #9ca3af;
+    }
+    .logout {
+      color: #f87171;
+      font-weight: 600;
+    }
+    .wrap { 
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 14px rgba(16,24,40,.1);
+    }
+  </style>
+
+  {% block head %}{% endblock %}
+</head>
+
+<body>
+
+  <!-- ✅ universal reusable topbar -->
+  {% include "topbar.html" %}
+
+  <div class="wrap">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+</body>
+</html>
